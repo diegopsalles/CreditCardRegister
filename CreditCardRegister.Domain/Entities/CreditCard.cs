@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CreditCardRegister.Domain.Entities
 {
-    internal class CreditCard
+    public class CreditCard
     {
     }
 }
