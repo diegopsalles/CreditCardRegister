@@ -18,10 +18,4 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\CreditCardRegister.Application\CreditCardRegister.Application.csproj" />
-    <ProjectReference Include="..\CreditCardRegister.Contracts\CreditCardRegister.Contracts.csproj" />
-    <ProjectReference Include="..\CreditCardRegister.Infrastructure\CreditCardRegister.Infrastructure.csproj" />
-  </ItemGroup>
-
 </Project>

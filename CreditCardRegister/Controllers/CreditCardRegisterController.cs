@@ -1,5 +1,6 @@
 ﻿using CreditCardRegister.Application.Authentication.Common;
 using CreditCardRegister.Application.CreditCard.Commands;
+using CreditCardRegister.Application.CreditCard.Common;
 using CreditCardRegister.Application.CreditCard.Queries;
 using CreditCardRegister.Contracts.Authentication;
 using ErrorOr;
@@ -10,12 +11,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace CreditCardRegister.API.Controllers
 {
     [Route("creditCard")]   
-    public class CreditCardController : ApiController
+    public class CreditCardRegisterController : ApiController
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public CreditCardController(IMediator mediator, IMapper mapper)
+        public CreditCardRegisterController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
             _mapper = mapper;
@@ -26,9 +27,9 @@ namespace CreditCardRegister.API.Controllers
         {
 
             var command = _mapper.Map<CreditCardRegisterCommand>(request);
-            ErrorOr<AuthenticationResult> authResult = await _mediator.Send(command);
+            ErrorOr<CredidCarRegisterResult> creditCardResult = await _mediator.Send(command);
 
-            return authResult.Match(
+            return creditCardResult.Match(
                 authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
                 errors => Problem(errors)
                 );
@@ -39,9 +40,9 @@ namespace CreditCardRegister.API.Controllers
         {
 
             var command = _mapper.Map<CreditCardRegisterBatchCommand>(request);
-            ErrorOr<AuthenticationResult> authResult = await _mediator.Send(command);
+            ErrorOr<CredidCarRegisterResult> creditCardResult = await _mediator.Send(command);
 
-            return authResult.Match(
+            return creditCardResult.Match(
                 authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
                 errors => Problem(errors)
                 );
@@ -52,9 +53,9 @@ namespace CreditCardRegister.API.Controllers
         {
 
             var command = _mapper.Map<GetAllCreditCard>(request);
-            ErrorOr<AuthenticationResult> authResult = await _mediator.Send(command);
+            ErrorOr<CredidCarRegisterResult> creditCardResult = await _mediator.Send(command);
 
-            return authResult.Match(
+            return creditCardResult.Match(
                 authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
                 errors => Problem(errors)
                 );
@@ -65,9 +66,9 @@ namespace CreditCardRegister.API.Controllers
         {
 
             var command = _mapper.Map<GetCreditCardById>(request);
-            ErrorOr<AuthenticationResult> authResult = await _mediator.Send(command);
+            ErrorOr<CredidCarRegisterResult> creditCardResult = await _mediator.Send(command);
 
-            return authResult.Match(
+            return creditCardResult.Match(
                 authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
                 errors => Problem(errors)
                 );
