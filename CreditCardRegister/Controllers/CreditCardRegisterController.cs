@@ -1,77 +1,60 @@
-﻿using CreditCardRegister.Application.Authentication.Common;
-using CreditCardRegister.Application.CreditCard.Commands;
-using CreditCardRegister.Application.CreditCard.Common;
-using CreditCardRegister.Application.CreditCard.Queries;
-using CreditCardRegister.Contracts.Authentication;
-using ErrorOr;
-using MapsterMapper;
-using MediatR;
+﻿using CreditCardRegister.API.Auth;
+using CreditCardRegister.API.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CreditCardRegister.API.Controllers
 {
     [Route("creditCard")]   
-    public class CreditCardRegisterController : ApiController
+    public class CreditCardRegisterController : ControllerBase
     {
-        private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
 
-        public CreditCardRegisterController(IMediator mediator, IMapper mapper)
+        [HttpPost("registerCreditCard")]
+        [Authorize(Roles = UserRoles.User)]
+        public async Task<IActionResult> RegisterCreditCard(RegisterCreditCardRequest request)
         {
-            _mediator = mediator;
-            _mapper = mapper;
+
+            return Ok(request);
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterRequest request)
+
+
+        [HttpPost("registerBatchCreditCard")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> RegisterBatchCreditCard([FromForm] ICollection<IFormFile> batchRegister)
         {
+            if (batchRegister == null || batchRegister.Count == 0)
+                    return BadRequest();
 
-            var command = _mapper.Map<CreditCardRegisterCommand>(request);
-            ErrorOr<CredidCarRegisterResult> creditCardResult = await _mediator.Send(command);
+            List<byte[]> data = new();
 
-            return creditCardResult.Match(
-                authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
-                errors => Problem(errors)
-                );
-        }
-
-        [HttpPost("batchRegister")]
-        public async Task<IActionResult> BatchRegister(RegisterRequest request)
-        {
-
-            var command = _mapper.Map<CreditCardRegisterBatchCommand>(request);
-            ErrorOr<CredidCarRegisterResult> creditCardResult = await _mediator.Send(command);
-
-            return creditCardResult.Match(
-                authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
-                errors => Problem(errors)
-                );
+            foreach (var txtFile in batchRegister)
+            {
+                if(txtFile.Length > 0)
+                {
+                    using (var stream = new MemoryStream())
+                    {
+                        await txtFile.CopyToAsync(stream);
+                        data.Add(stream.ToArray()); 
+                    }
+                    
+                }
+            }
+            return  Ok();
         }
 
         [HttpGet("getAllCreditCard")]
-        public async Task<IActionResult> GetAll(RegisterRequest request)
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> GetAll()
         {
-
-            var command = _mapper.Map<GetAllCreditCard>(request);
-            ErrorOr<CredidCarRegisterResult> creditCardResult = await _mediator.Send(command);
-
-            return creditCardResult.Match(
-                authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
-                errors => Problem(errors)
-                );
+            return Ok();
         }
 
         [HttpGet("getByIdCreditCard")]
-        public async Task<IActionResult> GetById(RegisterRequest request)
+        [Authorize(Roles = UserRoles.User)]
+        public async Task<IActionResult> GetById([FromQuery] long creditCardNumber)
         {
-
-            var command = _mapper.Map<GetCreditCardById>(request);
-            ErrorOr<CredidCarRegisterResult> creditCardResult = await _mediator.Send(command);
-
-            return creditCardResult.Match(
-                authResult => Ok(_mapper.Map<AuthenticationResponse>(authResult)),
-                errors => Problem(errors)
-                );
+            return Ok();
         }
     }
 }
