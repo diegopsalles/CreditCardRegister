@@ -1,5 +1,5 @@
 ﻿using CreditCardRegister.API.Auth;
-using CreditCardRegister.API.Model;
+using CreditCardRegister.API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -9,6 +9,7 @@ using System.Security.Claims;
 namespace CreditCardRegister.API.Controllers
 {
     [Route("auth")]
+    [ApiController]
     public class AuthenticationController : ControllerBase
     {
         private readonly IConfiguration _configuration;

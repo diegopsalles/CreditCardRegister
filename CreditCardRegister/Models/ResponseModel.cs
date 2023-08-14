@@ -1,4 +1,4 @@
-﻿namespace CreditCardRegister.API.Model
+﻿namespace CreditCardRegister.API.Models
 {
     public class ResponseModel<T> : ResponseModel where T : class
     {

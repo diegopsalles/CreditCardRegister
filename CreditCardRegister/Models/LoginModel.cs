@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CreditCardRegister.API.Model
+namespace CreditCardRegister.API.Models
 {
     public class LoginModel
     {
