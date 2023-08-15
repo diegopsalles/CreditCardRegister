@@ -9,11 +9,9 @@ namespace CreditCardRegister.API.Mapper
         public CreditCardProfile()
         {
             CreateMap<CreditCard, CreditCardViewModel>();
-            CreateMap<RegisterBatchCreditCard, RegisterBatchCreditCardViewModel>();
-            CreateMap<RegisterCreditCard, RegisterCreditCardViewModel>();
+            CreateMap<RegisterCreditCard, RegisterBatchCreditCardViewModel>();
             
             CreateMap<CreditCardInputModel, CreditCard>();
-            CreateMap<RegisterBatchCreditCardInputModel, RegisterBatchCreditCard>();
             CreateMap<RegisterCreditCardInputModel, RegisterCreditCard>();
         }
     }

@@ -5,6 +5,7 @@ using CreditCardRegister.API.Entity;
 using CreditCardRegister.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CreditCardRegister.API.Controllers
 {
@@ -22,15 +23,15 @@ namespace CreditCardRegister.API.Controllers
         }
 
         [HttpPost("registerCreditCard")]
-        [Authorize(Roles = UserRoles.User)]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> RegisterCreditCard([FromBody] RegisterCreditCardInputModel request)
         {
             
-            var devEvent = _mapper.Map<RegisterCreditCard>(request);
+            var registerBatchCreditCard = _mapper.Map<RegisterCreditCard>(request);
 
-            _context.RegisterCreditCards.Add(devEvent);
+            _context.BatchCreditCards.Add(registerBatchCreditCard);
             _context.SaveChanges();
-            return Ok(request);
+            return Ok(registerBatchCreditCard.BatchId);
         }
 
 
@@ -57,7 +58,7 @@ namespace CreditCardRegister.API.Controllers
                     }
                     
                 }
-                _mapper.Map<RegisterBatchCreditCard>(txtFile);
+                _mapper.Map<RegisterCreditCard>(txtFile);
             }
             return  Ok();
         }
@@ -66,30 +67,50 @@ namespace CreditCardRegister.API.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> UpdateCreditCard(Guid id, CreditCardInputModel request)
         {
+            var updateCreditCard = _context.CreditCards.SingleOrDefault(d => d.Id == id);
 
-            return Ok();
+            if (updateCreditCard == null)
+                return NotFound();
+
+            updateCreditCard.Update(request.CreditCardNumber);
+
+            _context.CreditCards.Update(updateCreditCard);
+            _context.SaveChanges();
+            
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> DeleteCreditCard(Guid id)
         {
+            var deleteCreditCard = _context.CreditCards.SingleOrDefault(d => d.Id == id);
 
-            return Ok();
+            if (deleteCreditCard.IsDeleted == true)
+            {
+                return NotFound();
+            }
+
+            deleteCreditCard.Delete();
+
+            _context.SaveChanges();
+
+            return NoContent();
         }
 
-        [HttpGet("getAllCreditCard")]
-        [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> GetAll()
-        {
-            return Ok();
-        }
 
         [HttpGet("getByIdCreditCard")]
         [Authorize(Roles = UserRoles.User)]
-        public async Task<IActionResult> GetById([FromQuery] long creditCardNumber)
+        public async Task<IActionResult> GetById([FromQuery] string creditCardNumber)
         {
-            return Ok();
+            var getCreditCard = _context.CreditCards.SingleOrDefault(d => d.CreditCardNumber == creditCardNumber);
+
+            if (getCreditCard == null)
+                return NotFound();
+
+            var viewModel = _mapper.Map<CreditCardViewModel>(getCreditCard);
+
+            return Ok(viewModel);
         }
     }
 }

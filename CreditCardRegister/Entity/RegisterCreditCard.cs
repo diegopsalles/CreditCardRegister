@@ -1,16 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CreditCardRegister.API.Entity
 {
     public class RegisterCreditCard
     {
-        public string Name { get; set; }
+        public void Update(string batchName, DateTime batchDate, int batchAmount, List<CreditCard> creditCards)
+        {
+            BatchName = batchName;
+            BatchDate = batchDate;
+            BatchAmount = batchAmount;
+        }
 
-        public DateTime CreatedDate { get; set; }
+        public Guid BatchId { get; set; }= Guid.NewGuid();
+        public string BatchName { get; set; }
+        public DateTime BatchDate { get; set; }
+        public int BatchAmount { get; set; }
+        public  List<CreditCard> CreditCards { get; set; }
 
-        public string Email { get; set; }
-
-        public virtual CreditCard CreditCardNumber { get; set; }
     }
 }

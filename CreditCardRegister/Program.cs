@@ -25,16 +25,18 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddAutoMapper(typeof(CreditCardProfile).Assembly);
 
+
 //AddDbContext
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); options.EnableSensitiveDataLogging();
 });
 
 //CreditCardContext
 builder.Services.AddDbContext<CreditCardContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); options.EnableSensitiveDataLogging();
+
 });
 
 //AddIdentity

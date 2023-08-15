@@ -17,7 +17,7 @@ namespace CreditCardRegister.API.Migrations.CreditCard
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.14")
+                .HasAnnotation("ProductVersion", "6.0.21")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -30,7 +30,11 @@ namespace CreditCardRegister.API.Migrations.CreditCard
 
                     b.Property<string>("CreditCardNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("CreditCardNumber");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -58,28 +62,6 @@ namespace CreditCardRegister.API.Migrations.CreditCard
                     b.ToTable("RegisterBatchCreditCard", (string)null);
                 });
 
-            modelBuilder.Entity("CreditCardRegister.API.Entity.RegisterCreditCard", b =>
-                {
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime");
-
-                    b.Property<Guid>("CreditCardNumberId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Email");
-
-                    b.HasIndex("CreditCardNumberId");
-
-                    b.ToTable("RegisterCreditCard", (string)null);
-                });
-
             modelBuilder.Entity("CreditCardRegister.API.Entity.CreditCard", b =>
                 {
                     b.HasOne("CreditCardRegister.API.Entity.RegisterBatchCreditCard", null)
@@ -87,17 +69,6 @@ namespace CreditCardRegister.API.Migrations.CreditCard
                         .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("CreditCardRegister.API.Entity.RegisterCreditCard", b =>
-                {
-                    b.HasOne("CreditCardRegister.API.Entity.CreditCard", "CreditCardNumber")
-                        .WithMany()
-                        .HasForeignKey("CreditCardNumberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CreditCardNumber");
                 });
 
             modelBuilder.Entity("CreditCardRegister.API.Entity.RegisterBatchCreditCard", b =>
