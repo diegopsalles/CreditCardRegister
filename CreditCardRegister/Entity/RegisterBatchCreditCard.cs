@@ -9,11 +9,11 @@ namespace CreditCardRegister.API.Entity
            CreditCards = new List<CreditCard>();
         }
 
-        public Guid BatchId { get; set; }
+        public Guid BatchId { get; set; } = Guid.NewGuid();
         public string BatchName { get; set; }
-        public DateOnly BatchDate { get; set; }
+        public DateTime BatchDate { get; set; }
         public int BatchAmount { get; set; }
-        public List<CreditCard> CreditCards { get; set; }
+        public  List<CreditCard> CreditCards { get; set; }
 
     }
 }

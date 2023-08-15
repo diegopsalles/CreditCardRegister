@@ -16,6 +16,13 @@ namespace CreditCardRegister.API.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
+        public AuthenticationController(IConfiguration configuration, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        {
+            _configuration = configuration;
+            _userManager = userManager;
+            _roleManager = roleManager;
+        }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] CreateUserModel model)
         {

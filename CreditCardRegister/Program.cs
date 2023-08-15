@@ -1,5 +1,6 @@
 using System.Text;
 using CreditCardRegister.API.Data;
+using CreditCardRegister.API.Mapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,8 @@ builder.Services.AddCors(options =>
            .AllowAnyMethod()
            .AllowAnyHeader());
 });
+
+builder.Services.AddAutoMapper(typeof(CreditCardProfile).Assembly);
 
 //AddDbContext
 builder.Services.AddDbContext<ApplicationContext>(options =>

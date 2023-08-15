@@ -12,13 +12,11 @@ namespace CreditCardRegister.API.Controllers
     [ApiController]
     public class CreditCardRegisterController : ControllerBase
     {
-        private readonly ILogger _logger;
         private readonly CreditCardContext _context;
         private readonly IMapper _mapper;
 
-        public CreditCardRegisterController(ILogger logger, CreditCardContext context, IMapper mapper)
+        public CreditCardRegisterController(CreditCardContext context, IMapper mapper)
         {
-            _logger = logger;
             _context = context;
             _mapper = mapper;
         }
@@ -27,18 +25,20 @@ namespace CreditCardRegister.API.Controllers
         [Authorize(Roles = UserRoles.User)]
         public async Task<IActionResult> RegisterCreditCard([FromBody] RegisterCreditCardInputModel request)
         {
-            _logger.LogInformation("Request RegisterCreditCard");
+            
+            var devEvent = _mapper.Map<RegisterCreditCard>(request);
 
+            _context.RegisterCreditCards.Add(devEvent);
+            _context.SaveChanges();
             return Ok(request);
         }
 
 
 
         [HttpPost("registerBatchCreditCard")]
-        [Authorize(Roles = UserRoles.Admin)]
+        [Authorize(Roles = UserRoles.User)]
         public async Task<IActionResult> RegisterBatchCreditCard([FromForm] ICollection<IFormFile> batchRegister)
         {
-            _logger.LogInformation("Request RegisterBatchCreditCard");
 
             if (batchRegister == null || batchRegister.Count == 0)
                     return BadRequest();
@@ -52,7 +52,8 @@ namespace CreditCardRegister.API.Controllers
                     using (var stream = new MemoryStream())
                     {
                         await txtFile.CopyToAsync(stream);
-                        data.Add(stream.ToArray()); 
+                        data.Add(stream.ToArray());
+
                     }
                     
                 }
@@ -65,7 +66,6 @@ namespace CreditCardRegister.API.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> UpdateCreditCard(Guid id, CreditCardInputModel request)
         {
-            _logger.LogInformation("Request UpdateCreditCard");
 
             return Ok();
         }
@@ -74,7 +74,6 @@ namespace CreditCardRegister.API.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> DeleteCreditCard(Guid id)
         {
-            _logger.LogInformation("Request DeleteCreditCard");
 
             return Ok();
         }
@@ -83,7 +82,6 @@ namespace CreditCardRegister.API.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> GetAll()
         {
-            _logger.LogInformation("Request GetAllCreditCard");
             return Ok();
         }
 
@@ -91,7 +89,6 @@ namespace CreditCardRegister.API.Controllers
         [Authorize(Roles = UserRoles.User)]
         public async Task<IActionResult> GetById([FromQuery] long creditCardNumber)
         {
-            _logger.LogInformation("Request GetByIdCreditCard");
             return Ok();
         }
     }

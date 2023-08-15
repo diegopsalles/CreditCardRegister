@@ -19,8 +19,7 @@ namespace CreditCardRegister.API.Data
             {
                 entity.ToTable("CreditCard");
                 entity.HasKey(x => x.Id);
-                entity.Property(x => x.CreditCardNumber)
-                    .HasMaxLength(100).HasColumnType("varchar(100)");
+                entity.Property(x => x.CreditCardNumber).HasColumnName("CreditCardNumber");
             });
             modelBuilder.Entity<RegisterBatchCreditCard>(entity =>
             {
@@ -29,16 +28,16 @@ namespace CreditCardRegister.API.Data
                 entity.Property(x => x.BatchName);
                 entity.Property(x => x.BatchDate).HasColumnType("datetime");
                 entity.Property(x => x.BatchAmount);
-                entity.HasMany(x => x.CreditCards).WithOne().HasForeignKey(x => x.CreditCardNumber);
+                entity.HasMany(x => x.CreditCards).WithOne().HasForeignKey(x => x.Id);
 
             });
             modelBuilder.Entity<RegisterCreditCard>(entity =>
             {
                 entity.ToTable("RegisterCreditCard");
+                entity.HasKey(x => x.Email);
                 entity.Property(x => x.Name);
                 entity.Property(x => x.CreatedDate).HasColumnType("datetime");
-                entity.Property(x => x.Email);
-                entity.HasOne(x => x.CreditCardNumber).WithOne();
+                entity.HasOne(x => x.CreditCardNumber);
             });
         }
 

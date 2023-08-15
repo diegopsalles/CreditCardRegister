@@ -12,9 +12,9 @@ namespace CreditCardRegister.API.Models
     {
         public Guid BatchId { get; set; }
         public string BatchName { get; set; }
-        public DateOnly BatchDate { get; set; }
+        public DateTime BatchDate { get; set; }
         public int BatchAmount { get; set; }
-        public List<CreditCard> CreditCards { get; set; }
+        public  List<CreditCardViewModel> CreditCards { get; set; }
     }
 
     public class RegisterCreditCardViewModel
@@ -24,6 +24,6 @@ namespace CreditCardRegister.API.Models
         public DateTime CreatedDate { get; set; }
 
         public string Email { get; set; }
-        public CreditCard CreditCardNumber { get; set; }
+        public  CreditCardViewModel CreditCardNumber { get; set; }
     }
 }

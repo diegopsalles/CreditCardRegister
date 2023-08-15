@@ -7,7 +7,7 @@ namespace CreditCardRegister.API.Models
         public string BatchName { get; set; }
         public DateOnly BatchDate { get; set; }
         public int BatchAmount { get; set; }
-        public List<CreditCard> CreditCards { get; set; }
+        public List<CreditCardInputModel> CreditCards { get; set; }
     }
 
     public class RegisterCreditCardInputModel
@@ -17,7 +17,7 @@ namespace CreditCardRegister.API.Models
         public DateTime CreatedDate { get; set; }
 
         public string Email { get; set; }
-        public CreditCard CreditCardNumber { get; set; }
+        public CreditCardInputModel CreditCardNumber { get; set; }
     }
 
     public class CreditCardInputModel

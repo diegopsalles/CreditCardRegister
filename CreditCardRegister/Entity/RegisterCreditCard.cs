@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CreditCardRegister.API.Entity
 {
@@ -9,6 +10,7 @@ namespace CreditCardRegister.API.Entity
         public DateTime CreatedDate { get; set; }
 
         public string Email { get; set; }
-        public CreditCard CreditCardNumber { get; set; }
+
+        public virtual CreditCard CreditCardNumber { get; set; }
     }
 }
