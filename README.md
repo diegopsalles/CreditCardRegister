@@ -38,3 +38,31 @@ ApplicationContext (Autehtication)
 
 CreditCardContext (Autehtication)
 ```dotnet ef database update --context CreditCardContext```
+
+#Executanto do Projeto
+Agora vamos utilizar o comando ``dotnet run`` para executar o projeto, e acessar a rota ``/swagger`` para visualizar os endpoints disponíveis em nossa API.
+
+
+Vamos utilizar o endpoint ``/api/Authenticate/register`` para criar dois usuários:
+
+User:
+<!--{
+  "userName": "user",
+  "isAdmin": false,
+  "email": "user@example.com",
+  "password": "Password@123"
+}-->
+
+Admin:
+<!--{
+  "userName": "admin",
+  "isAdmin": false,
+  "email": "admin@example.com",
+  "password": "Password@123"
+}-->
+
+
+Para obter o token vamos utilizar o endpoint ``/api/Authenticate/register`` informando ``username`` e ``password`` como resultado vamos obter o token.
+
+Precisamos informar o token obtido clicando no botão ``Authorize``.
+
