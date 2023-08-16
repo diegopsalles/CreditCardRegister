@@ -4,18 +4,16 @@ using CreditCardRegister.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace CreditCardRegister.API.Migrations.CreditCard
+namespace CreditCardRegister.API.Migrations
 {
     [DbContext(typeof(CreditCardContext))]
-    [Migration("20230815033049_Initial")]
-    partial class Initial
+    partial class CreditCardContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,8 +24,8 @@ namespace CreditCardRegister.API.Migrations.CreditCard
 
             modelBuilder.Entity("CreditCardRegister.API.Entity.CreditCard", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreditCardNumber")
                         .IsRequired()
@@ -42,17 +40,18 @@ namespace CreditCardRegister.API.Migrations.CreditCard
                     b.ToTable("CreditCard", (string)null);
                 });
 
-            modelBuilder.Entity("CreditCardRegister.API.Entity.RegisterBatchCreditCard", b =>
+            modelBuilder.Entity("CreditCardRegister.API.Entity.RegisterCreditCard", b =>
                 {
-                    b.Property<Guid>("BatchId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("BatchId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("BatchAmount")
-                        .HasColumnType("int");
+                    b.Property<string>("BatchAmount")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("BatchDate")
-                        .HasColumnType("datetime");
+                    b.Property<string>("BatchDate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BatchName")
                         .IsRequired()
@@ -65,14 +64,14 @@ namespace CreditCardRegister.API.Migrations.CreditCard
 
             modelBuilder.Entity("CreditCardRegister.API.Entity.CreditCard", b =>
                 {
-                    b.HasOne("CreditCardRegister.API.Entity.RegisterBatchCreditCard", null)
+                    b.HasOne("CreditCardRegister.API.Entity.RegisterCreditCard", null)
                         .WithMany("CreditCards")
                         .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CreditCardRegister.API.Entity.RegisterBatchCreditCard", b =>
+            modelBuilder.Entity("CreditCardRegister.API.Entity.RegisterCreditCard", b =>
                 {
                     b.Navigation("CreditCards");
                 });

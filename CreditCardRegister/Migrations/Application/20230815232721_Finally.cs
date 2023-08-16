@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace CreditCardRegister.API.Migrations
+namespace CreditCardRegister.API.Migrations.Application
 {
-    public partial class Initial : Migration
+    public partial class Finally : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

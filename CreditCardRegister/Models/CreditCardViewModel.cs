@@ -4,14 +4,14 @@ namespace CreditCardRegister.API.Models
 {
     public class CreditCardViewModel
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string CreditCardNumber { get; set; }
 
     }
 
     public class RegisterBatchCreditCardViewModel
     {
-        public Guid BatchId { get; set; }
+        public string BatchId { get; set; }
         public string BatchName { get; set; }
         public DateTime BatchDate { get; set; }
         public int BatchAmount { get; set; }

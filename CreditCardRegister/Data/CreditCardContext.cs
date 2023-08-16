@@ -10,8 +10,8 @@ namespace CreditCardRegister.API.Data
         }
 
 
-        public DbSet<CreditCard> CreditCards { get; set; }
-        public DbSet<RegisterCreditCard> BatchCreditCards { get; set; }
+        public DbSet<CreditCard> CreditCard { get; set; }
+        public DbSet<RegisterCreditCard> BatchCreditCard { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CreditCard>(entity =>
@@ -22,10 +22,11 @@ namespace CreditCardRegister.API.Data
             });
             modelBuilder.Entity<RegisterCreditCard>(entity =>
             {
+
                 entity.ToTable("RegisterBatchCreditCard");
                 entity.HasKey(x => x.BatchId);
                 entity.Property(x => x.BatchName);
-                entity.Property(x => x.BatchDate).HasColumnType("datetime");
+                entity.Property(x => x.BatchDate);
                 entity.Property(x => x.BatchAmount);
                 entity.HasMany(x => x.CreditCards).WithOne().HasForeignKey(x => x.Id);
 

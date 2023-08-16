@@ -6,6 +6,8 @@ using CreditCardRegister.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.PortableExecutable;
+using System.Text;
 
 namespace CreditCardRegister.API.Controllers
 {
@@ -24,20 +26,22 @@ namespace CreditCardRegister.API.Controllers
 
         [HttpPost("registerCreditCard")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> RegisterCreditCard([FromBody] RegisterCreditCardInputModel request)
+        public async Task<IActionResult> RegisterCreditCard([FromBody] CreditCardInputModel request)
         {
-            
-            var registerBatchCreditCard = _mapper.Map<RegisterCreditCard>(request);
+            if (request == null)
+                return BadRequest();
 
-            _context.BatchCreditCards.Add(registerBatchCreditCard);
+            var registerCreditCard = _mapper.Map<CreditCard>(request);
+
+            _context.CreditCard.Add(registerCreditCard);
             _context.SaveChanges();
-            return Ok(registerBatchCreditCard.BatchId);
-        }
+            return Ok(registerCreditCard.CreditCardNumber);
+        }  
 
 
 
         [HttpPost("registerBatchCreditCard")]
-        [Authorize(Roles = UserRoles.User)]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> RegisterBatchCreditCard([FromForm] ICollection<IFormFile> batchRegister)
         {
 
@@ -45,21 +49,65 @@ namespace CreditCardRegister.API.Controllers
                     return BadRequest();
 
             List<byte[]> data = new();
-
-            foreach (var txtFile in batchRegister)
+            var result = new StringBuilder();
+            var registerCreditCard = new RegisterCreditCard();
+            var listCreditCards = new List<CreditCard>();
+            var creditCard = new CreditCard();
+            try
             {
-                if(txtFile.Length > 0)
+                foreach (var txtFile in batchRegister)
                 {
-                    using (var stream = new MemoryStream())
+                    if (txtFile.Length > 0)
                     {
-                        await txtFile.CopyToAsync(stream);
-                        data.Add(stream.ToArray());
+                        using (var reader = new StreamReader(txtFile.OpenReadStream()))
+                        {
+                            while (reader.Peek() >= 0)
+                            {
+                                result.AppendLine(reader.ReadLine());
+                            }
 
+                            var listResult = result.ToString().Replace("\r","").Split('\n').ToList();
+
+                            for (int i = 0; i < listResult.Count(); i++)
+                            {
+                                if (i == 0)
+                                {
+                                    registerCreditCard.IdArchive = listResult[i].ToString().Substring(37, 8);
+                                    registerCreditCard.BatchName = listResult[i].ToString().Substring(0, 20);
+                                    registerCreditCard.BatchDate = listResult[i].ToString().Substring(29, 8);
+                                    registerCreditCard.BatchAmount = listResult[i].ToString().Substring(46, 5);
+                                    registerCreditCard.CreditCards = listCreditCards;
+                                }
+                                else if(i<=10)
+                                {
+                                    creditCard.IdArchiveLine = listResult[i].ToString().Substring(0, 3);
+                                    creditCard.CreditCardNumber = listResult[i].ToString().Substring(7, 15);
+                                    creditCard.IsDeleted = false;
+                                    listCreditCards.Add(creditCard);
+                                }                                
+                            }
+                            registerCreditCard.CreditCards = listCreditCards;
+                        }                        
                     }
-                    
                 }
-                _mapper.Map<RegisterCreditCard>(txtFile);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);  
+            }
+            
+            var registerBatchCreditCard = _mapper.Map<RegisterCreditCard>(registerCreditCard);
+            _context.BatchCreditCard.Add(registerBatchCreditCard);
+            
+
+            var creditCardList = _mapper.Map<List<CreditCard>>(registerBatchCreditCard.CreditCards);
+            foreach (var item in creditCardList)
+            {
+                _context.CreditCard.Add(item);
+            }
+
+            _context.SaveChanges();
+
             return  Ok();
         }
 
@@ -67,14 +115,14 @@ namespace CreditCardRegister.API.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> UpdateCreditCard(Guid id, CreditCardInputModel request)
         {
-            var updateCreditCard = _context.CreditCards.SingleOrDefault(d => d.Id == id);
+            var updateCreditCard = _context.CreditCard.SingleOrDefault(d => d.Id == id);
 
             if (updateCreditCard == null)
                 return NotFound();
 
             updateCreditCard.Update(request.CreditCardNumber);
 
-            _context.CreditCards.Update(updateCreditCard);
+            _context.CreditCard.Update(updateCreditCard);
             _context.SaveChanges();
             
             return NoContent();
@@ -84,7 +132,7 @@ namespace CreditCardRegister.API.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> DeleteCreditCard(Guid id)
         {
-            var deleteCreditCard = _context.CreditCards.SingleOrDefault(d => d.Id == id);
+            var deleteCreditCard = _context.CreditCard.SingleOrDefault(d => d.Id == id);
 
             if (deleteCreditCard.IsDeleted == true)
             {
@@ -103,7 +151,7 @@ namespace CreditCardRegister.API.Controllers
         [Authorize(Roles = UserRoles.User)]
         public async Task<IActionResult> GetById([FromQuery] string creditCardNumber)
         {
-            var getCreditCard = _context.CreditCards.SingleOrDefault(d => d.CreditCardNumber == creditCardNumber);
+            var getCreditCard = _context.CreditCard.SingleOrDefault(d => d.CreditCardNumber == creditCardNumber);
 
             if (getCreditCard == null)
                 return NotFound();

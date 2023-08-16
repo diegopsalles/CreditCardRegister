@@ -15,7 +15,7 @@ namespace CreditCardRegister.API.Models
     }
 
     public class CreditCardInputModel
-    {
+    {   
         [Required(ErrorMessage = "CreditCardNumber é obrigatório!")]
         public string CreditCardNumber { get; set; }
     }

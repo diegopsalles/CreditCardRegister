@@ -4,6 +4,7 @@ using CreditCardRegister.API.Mapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -25,17 +26,20 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddAutoMapper(typeof(CreditCardProfile).Assembly);
 
-
+builder.Services.AddTransient<ApplicationContext>();
 //AddDbContext
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); options.EnableSensitiveDataLogging();
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.EnableSensitiveDataLogging();
 });
 
+builder.Services.AddTransient<CreditCardContext>();
 //CreditCardContext
 builder.Services.AddDbContext<CreditCardContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); options.EnableSensitiveDataLogging();
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.EnableSensitiveDataLogging();
 
 });
 
