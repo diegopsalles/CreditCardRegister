@@ -5,8 +5,6 @@ using CreditCardRegister.API.Entity;
 using CreditCardRegister.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Reflection.PortableExecutable;
 using System.Text;
 
 namespace CreditCardRegister.API.Controllers
@@ -51,8 +49,7 @@ namespace CreditCardRegister.API.Controllers
             List<byte[]> data = new();
             var result = new StringBuilder();
             var registerCreditCard = new RegisterCreditCard();
-            var listCreditCards = new List<CreditCard>();
-            var creditCard = new CreditCard();
+
             try
             {
                 foreach (var txtFile in batchRegister)
@@ -76,18 +73,25 @@ namespace CreditCardRegister.API.Controllers
                                     registerCreditCard.BatchName = listResult[i].ToString().Substring(0, 20);
                                     registerCreditCard.BatchDate = listResult[i].ToString().Substring(29, 8);
                                     registerCreditCard.BatchAmount = listResult[i].ToString().Substring(46, 5);
-                                    registerCreditCard.CreditCards = listCreditCards;
+                                    
                                 }
-                                else if(i<=10)
+                                else if (i <= 10)
                                 {
-                                    creditCard.IdArchiveLine = listResult[i].ToString().Substring(0, 3);
-                                    creditCard.CreditCardNumber = listResult[i].ToString().Substring(7, 15);
-                                    creditCard.IsDeleted = false;
-                                    listCreditCards.Add(creditCard);
-                                }                                
+                                    registerCreditCard.CreditCardsIds.AddRange(new List<CreditCard>()
+                                    {
+                                        new CreditCard()
+                                        {
+                                            IdArchiveLine = listResult[i].ToString().Substring(0, 3),
+                                            CreditCardNumber = listResult[i].ToString().Substring(7, 15),
+                                            IsDeleted = false
+                                        }
+                                    });
+                                }
+                                
                             }
-                            registerCreditCard.CreditCards = listCreditCards;
-                        }                        
+                            //registerCreditCard.CreditCardsIds.AddRange(listCreditCards);
+                        }       
+                        
                     }
                 }
             }
@@ -98,14 +102,6 @@ namespace CreditCardRegister.API.Controllers
             
             var registerBatchCreditCard = _mapper.Map<RegisterCreditCard>(registerCreditCard);
             _context.BatchCreditCard.Add(registerBatchCreditCard);
-            
-
-            var creditCardList = _mapper.Map<List<CreditCard>>(registerBatchCreditCard.CreditCards);
-            foreach (var item in creditCardList)
-            {
-                _context.CreditCard.Add(item);
-            }
-
             _context.SaveChanges();
 
             return  Ok();
@@ -115,7 +111,7 @@ namespace CreditCardRegister.API.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> UpdateCreditCard(Guid id, CreditCardInputModel request)
         {
-            var updateCreditCard = _context.CreditCard.SingleOrDefault(d => d.Id == id);
+            var updateCreditCard = _context.CreditCard.SingleOrDefault(d => d.CreditCardId == id);
 
             if (updateCreditCard == null)
                 return NotFound();
@@ -132,7 +128,7 @@ namespace CreditCardRegister.API.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> DeleteCreditCard(Guid id)
         {
-            var deleteCreditCard = _context.CreditCard.SingleOrDefault(d => d.Id == id);
+            var deleteCreditCard = _context.CreditCard.SingleOrDefault(d => d.CreditCardId == id);
 
             if (deleteCreditCard.IsDeleted == true)
             {

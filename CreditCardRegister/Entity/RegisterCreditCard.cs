@@ -11,12 +11,21 @@ namespace CreditCardRegister.API.Entity
             BatchAmount = batchAmount;
         }
         [Key]
-        public Guid BatchId { get; set; }= Guid.NewGuid();
+        public Guid BatchId { get; set; }
         public string IdArchive { get; set; }
         public string BatchName { get; set; }
         public string BatchDate { get; set; }
         public string BatchAmount { get; set; }
-        public  List<CreditCard> CreditCards { get; set; }
+        public  List<CreditCard> CreditCardsIds { get; set; }
+        public RegisterCreditCard()
+        {
+            BatchId = Guid.NewGuid();
+            IdArchive = string.Empty;
+            BatchName = string.Empty;
+            BatchDate = string.Empty;
+            BatchAmount = string.Empty;
+            CreditCardsIds = new List<CreditCard>();
+        }
 
     }
 }

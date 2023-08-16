@@ -24,26 +24,36 @@ namespace CreditCardRegister.API.Migrations
 
             modelBuilder.Entity("CreditCardRegister.API.Entity.CreditCard", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("CreditCardId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreditCardNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("CreditCardNumber");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdArchiveLine")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.HasKey("Id");
+                    b.Property<Guid>("RegisterCreditCardId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.ToTable("CreditCard", (string)null);
+                    b.HasKey("CreditCardId");
+
+                    b.HasIndex("RegisterCreditCardId");
+
+                    b.ToTable("CreditCard");
                 });
 
             modelBuilder.Entity("CreditCardRegister.API.Entity.RegisterCreditCard", b =>
                 {
-                    b.Property<string>("BatchId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("BatchId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("BatchAmount")
                         .IsRequired()
@@ -57,23 +67,29 @@ namespace CreditCardRegister.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IdArchive")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("BatchId");
 
-                    b.ToTable("RegisterBatchCreditCard", (string)null);
+                    b.ToTable("BatchCreditCard");
                 });
 
             modelBuilder.Entity("CreditCardRegister.API.Entity.CreditCard", b =>
                 {
-                    b.HasOne("CreditCardRegister.API.Entity.RegisterCreditCard", null)
-                        .WithMany("CreditCards")
-                        .HasForeignKey("Id")
+                    b.HasOne("CreditCardRegister.API.Entity.RegisterCreditCard", "RegisterCreditCard")
+                        .WithMany("CreditCardsIds")
+                        .HasForeignKey("RegisterCreditCardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("RegisterCreditCard");
                 });
 
             modelBuilder.Entity("CreditCardRegister.API.Entity.RegisterCreditCard", b =>
                 {
-                    b.Navigation("CreditCards");
+                    b.Navigation("CreditCardsIds");
                 });
 #pragma warning restore 612, 618
         }
